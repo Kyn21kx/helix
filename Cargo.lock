@@ -1520,6 +1520,7 @@ dependencies = [
  "helix-tui",
  "helix-vcs",
  "helix-view",
+ "htmlescape",
  "ignore",
  "indexmap",
  "indoc",
@@ -1628,6 +1629,12 @@ checksum = "e3d1354bf6b7235cb4a0576c2619fd4ed18183f689b12b006a0ee7329eeff9a5"
 dependencies = [
  "windows-sys 0.52.0",
 ]
+
+[[package]]
+name = "htmlescape"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9025058dae765dee5070ec375f591e2ba14638c63feff74f13805a72e523163"
 
 [[package]]
 name = "iana-time-zone"

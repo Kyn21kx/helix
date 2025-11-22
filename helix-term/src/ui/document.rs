@@ -12,6 +12,7 @@ use helix_view::graphics::Rect;
 use helix_view::theme::Style;
 use helix_view::view::ViewPosition;
 use helix_view::{Document, Theme};
+use termina::style::StyleExt;
 use tui::buffer::Buffer as Surface;
 
 use crate::ui::text_decorations::DecorationManager;
@@ -91,6 +92,8 @@ pub fn render_text(
     let mut last_line_indent_level = 0;
     let mut reached_view_top = false;
 
+    let mut pieces = Vec::<(String, helix_view::graphics::HxStyle)>::new();
+
     loop {
         let Some(mut grapheme) = formatter.next() else {
             break;
@@ -107,9 +110,9 @@ pub fn render_text(
         }
 
         // if the end of the viewport is reached stop rendering
-        if grapheme.visual_pos.row as u16 >= renderer.viewport.height + renderer.offset.row as u16 {
-            break;
-        }
+        // if grapheme.visual_pos.row as u16 >= renderer.viewport.height + renderer.offset.row as u16 {
+        //     break;
+        // }
 
         // apply decorations before rendering a new line
         if grapheme.visual_pos.row as u16 != last_line_pos.visual_line {
@@ -156,6 +159,8 @@ pub fn render_text(
         };
         decorations.decorate_grapheme(renderer, &grapheme);
 
+        pieces.push((grapheme.raw.to_string(), grapheme_style.syntax_style.into()));
+
         let virt = grapheme.is_virtual();
         let grapheme_width = renderer.draw_grapheme(
             grapheme.raw,
@@ -168,8 +173,69 @@ pub fn render_text(
         last_line_end = grapheme.visual_pos.col + grapheme_width;
     }
 
+    serde_json::to_writer(&mut std::io::stdout(), &pieces).unwrap();
+    // write_html(&*pieces).unwrap();
+    std::process::exit(0);
+
     renderer.draw_indent_guides(last_line_indent_level, last_line_pos.visual_line);
     decorations.render_virtual_lines(renderer, last_line_pos, last_line_end)
+}
+
+use serde::Serialize;
+use std::io::{self, Write};
+
+/// Convert one HxStyle to CSS string
+fn style_to_css(style: &helix_view::graphics::HxStyle) -> String {
+    let mut css = String::new();
+
+    if let Some((r, g, b)) = style.fg {
+        css.push_str(&format!("color: rgb({},{},{});", r, g, b));
+    }
+
+    if let Some((r, g, b)) = style.bg {
+        css.push_str(&format!("background-color: rgb({},{},{});", r, g, b));
+    }
+
+    if style.bold {
+        css.push_str("font-weight: bold;");
+    }
+
+    if style.italic {
+        css.push_str("font-style: italic;");
+    }
+
+    if style.underline {
+        css.push_str("text-decoration: underline;");
+    }
+
+    css
+}
+
+/// Write a full HTML file to stdout showing the styled text.
+pub fn write_html(pieces: &[(String, helix_view::graphics::HxStyle)]) -> io::Result<()> {
+    let mut out = io::stdout();
+
+    writeln!(out, "<!DOCTYPE html>")?;
+    writeln!(out, "<html lang=\"en\">")?;
+    writeln!(out, "<head>")?;
+    writeln!(out, "<meta charset=\"UTF-8\">")?;
+    writeln!(out, "<title>Colored Output</title>")?;
+    writeln!(out, "<style> body {{ background-color: black; }} </style>")?;
+    writeln!(out, "</head>")?;
+    writeln!(out, "<body>")?;
+    writeln!(out, "<pre style=\"font-family: monospace; margin: 0;\">")?;
+
+    for (text, style) in pieces {
+        let escaped = htmlescape::encode_minimal(text);
+        let css = style_to_css(style);
+        write!(out, "<span style=\"{}\">{}</span>", css, escaped)?;
+    }
+
+    writeln!(out, "</pre>")?;
+    writeln!(out, "</body>")?;
+    writeln!(out, "</html>")?;
+
+    Ok(())
 }
 
 #[derive(Debug)]
@@ -358,7 +424,7 @@ impl<'a> TextRenderer<'a> {
 
         let in_bounds = self.column_in_bounds(position.col, width);
 
-        if in_bounds {
+        if true {
             self.surface.set_string(
                 self.viewport.x + (position.col - self.offset.col) as u16,
                 self.viewport.y + position.row as u16,

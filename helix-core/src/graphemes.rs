@@ -79,13 +79,8 @@ impl<'a> Grapheme<'a> {
 impl Display for Grapheme<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
-            Grapheme::Newline => write!(f, " "),
-            Grapheme::Tab { width } => {
-                for _ in 0..width {
-                    write!(f, " ")?;
-                }
-                Ok(())
-            }
+            Grapheme::Newline => write!(f, "\n"),
+            Grapheme::Tab { .. } => write!(f, "\t"),
             Grapheme::Other { ref g } => {
                 write!(f, "{g}")
             }

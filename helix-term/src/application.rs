@@ -153,6 +153,17 @@ impl Application {
 
         let jobs = Jobs::new();
 
+        // Read standard input and open file with those contents
+        let doc_id = editor
+            .open(Path::new("THIS_WONT_BE_READ"), Action::VerticalSplit)
+            .unwrap();
+
+        // Set language to whatever was passed to --lang
+        let syn_loader = editor.syn_loader.load();
+        let doc = editor.document_mut(doc_id).unwrap();
+        doc.set_language_by_language_id(args.lang.as_deref().unwrap_or_default(), &syn_loader)?;
+
+        #[cfg(any())]
         if args.load_tutor {
             let path = helix_loader::runtime_file(Path::new("tutor"));
             editor.open(&path, Action::VerticalSplit)?;
@@ -270,7 +281,7 @@ impl Application {
         Ok(app)
     }
 
-    async fn render(&mut self) {
+    pub async fn render(&mut self) {
         if self.compositor.full_redraw {
             self.terminal.clear().expect("Cannot clear the terminal");
             self.compositor.full_redraw = false;
@@ -284,6 +295,9 @@ impl Application {
 
         helix_event::start_frame();
         cx.editor.needs_redraw = false;
+
+        // Use Catppuccin Mocha Theme
+        cx.editor.theme_loader.load("catppuccin_mocha").unwrap();
 
         let area = self
             .terminal

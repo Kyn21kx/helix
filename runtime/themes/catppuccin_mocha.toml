@@ -22,7 +22,8 @@
 "variable" = "text"
 "variable.parameter" = { fg = "maroon", modifiers = ["italic"] }
 "variable.builtin" = "red"
-"variable.other.member" = "blue"
+# "variable.other.member" = "blue". UPDATED TO:
+"variable.other.member" = "teal"
 
 "label" = "sapphire" # used for lifetimes
 
@@ -35,7 +36,8 @@
 "operator" = "sky"
 
 "function" = "blue"
-"function.macro" = "mauve"
+# "function.macro" = "mauve". UPDATED TO:
+"function.macro" = "rosewater"
 
 "tag" = "blue"
 

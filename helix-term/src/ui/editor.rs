@@ -31,7 +31,7 @@ use helix_view::{
     keyboard::{KeyCode, KeyModifiers},
     Document, Editor, Theme, View,
 };
-use std::{mem::take, num::NonZeroUsize, ops, path::PathBuf, rc::Rc};
+use std::{mem::take, num::NonZeroUsize, ops, path::PathBuf, rc::Rc, u16};
 
 use tui::{buffer::Buffer as Surface, text::Span};
 
@@ -117,7 +117,7 @@ impl EditorView {
         }
 
         let syntax_highlighter =
-            Self::doc_syntax_highlighter(doc, view_offset.anchor, inner.height, &loader);
+            Self::doc_syntax_highlighter(doc, view_offset.anchor, u16::MAX, &loader);
         let mut overlays = Vec::new();
 
         overlays.push(Self::overlay_syntax_highlights(

@@ -755,10 +755,10 @@ impl Document {
         config: Arc<dyn DynAccess<Config>>,
         syn_loader: Arc<ArcSwap<syntax::Loader>>,
     ) -> Result<Self, DocumentOpenError> {
-        // If the path is not a regular file (e.g.: /dev/random) it should not be opened.
-        if path.metadata().is_ok_and(|metadata| !metadata.is_file()) {
-            return Err(DocumentOpenError::IrregularFile);
-        }
+        // // If the path is not a regular file (e.g.: /dev/random) it should not be opened.
+        // if path.metadata().is_ok_and(|metadata| !metadata.is_file()) {
+        //     return Err(DocumentOpenError::IrregularFile);
+        // }
 
         let editor_config = if config.load().editor_config {
             EditorConfig::find(path)
@@ -767,17 +767,18 @@ impl Document {
         };
         encoding = encoding.or(editor_config.encoding);
 
+        // Read contents from standard input
+        let (rope, encoding, has_bom) = from_reader(&mut std::io::stdin(), encoding)?;
         // Open the file if it exists, otherwise assume it is a new file (and thus empty).
-        let (rope, encoding, has_bom) = if path.exists() {
-            let mut file = std::fs::File::open(path)?;
-            from_reader(&mut file, encoding)?
-        } else {
-            let line_ending = editor_config
-                .line_ending
-                .unwrap_or_else(|| config.load().default_line_ending.into());
-            let encoding = encoding.unwrap_or(encoding::UTF_8);
-            (Rope::from(line_ending.as_str()), encoding, false)
-        };
+        // let (rope, encoding, has_bom) = if path.exists() {
+        //     let mut file = std::fs::File::open(path)?;
+        // } else {
+        //     let line_ending = editor_config
+        //         .line_ending
+        //         .unwrap_or_else(|| config.load().default_line_ending.into());
+        //     let encoding = encoding.unwrap_or(encoding::UTF_8);
+        //     (Rope::from(line_ending.as_str()), encoding, false)
+        // };
 
         let loader = syn_loader.load();
         let mut doc = Self::from(rope, Some((encoding, has_bom)), config, syn_loader);

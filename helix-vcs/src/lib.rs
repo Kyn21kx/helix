@@ -31,6 +31,7 @@ impl DiffProviderRegistry {
     /// Get the given file from the VCS. This provides the unedited document as a "base"
     /// for a diff to be created.
     pub fn get_diff_base(&self, file: &Path) -> Option<Vec<u8>> {
+        return None;
         self.providers
             .iter()
             .find_map(|provider| match provider.get_diff_base(file) {
@@ -45,6 +46,7 @@ impl DiffProviderRegistry {
 
     /// Get the current name of the current [HEAD](https://stackoverflow.com/questions/2304087/what-is-head-in-git).
     pub fn get_current_head_name(&self, file: &Path) -> Option<Arc<ArcSwap<Box<str>>>> {
+        return None;
         self.providers
             .iter()
             .find_map(|provider| match provider.get_current_head_name(file) {

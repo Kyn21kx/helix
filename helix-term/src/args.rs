@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 #[derive(Default)]
 pub struct Args {
     pub display_help: bool,
+    pub lang: Option<String>,
     pub display_version: bool,
     pub health: bool,
     pub health_arg: Option<String>,
@@ -69,6 +70,10 @@ impl Args {
                 "-c" | "--config" => match argv.next().as_deref() {
                     Some(path) => args.config_file = Some(path.into()),
                     None => anyhow::bail!("--config must specify a path to read"),
+                },
+                "--lang" => match argv.next().as_deref() {
+                    Some(path) => args.lang = Some(path.into()),
+                    None => anyhow::bail!("--lang must specify a path to read"),
                 },
                 "--log" => match argv.next().as_deref() {
                     Some(path) => args.log_file = Some(path.into()),

@@ -514,6 +514,43 @@ pub struct Style {
     pub sub_modifier: Modifier,
 }
 
+#[derive(Serialize)]
+pub struct HxStyle {
+    pub fg: Option<(u8, u8, u8)>,
+    pub bg: Option<(u8, u8, u8)>,
+    pub bold: bool,
+    pub italic: bool,
+    pub underline: bool,
+}
+
+impl From<Style> for HxStyle {
+    fn from(style: Style) -> Self {
+        let mut modifier = Modifier::empty();
+        modifier.insert(style.add_modifier);
+        modifier.remove(style.sub_modifier);
+
+        Self {
+            fg: style.fg.and_then(|c| {
+                if let Color::Rgb(r, g, b) = c {
+                    Some((r, g, b))
+                } else {
+                    None
+                }
+            }),
+            bg: style.bg.and_then(|c| {
+                if let Color::Rgb(r, g, b) = c {
+                    Some((r, g, b))
+                } else {
+                    None
+                }
+            }),
+            bold: modifier.contains(Modifier::BOLD),
+            italic: modifier.contains(Modifier::ITALIC),
+            underline: style.underline_style.is_some(),
+        }
+    }
+}
+
 impl Default for Style {
     fn default() -> Self {
         Self::new()

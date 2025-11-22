@@ -239,13 +239,13 @@ impl Buffer {
     ///
     /// Panics when given an coordinate that is outside of this Buffer's area.
     pub fn index_of(&self, x: u16, y: u16) -> usize {
-        debug_assert!(
-            self.in_bounds(x, y),
-            "Trying to access position outside the buffer: x={}, y={}, area={:?}",
-            x,
-            y,
-            self.area
-        );
+        // debug_assert!(
+        //     self.in_bounds(x, y),
+        //     "Trying to access position outside the buffer: x={}, y={}, area={:?}",
+        //     x,
+        //     y,
+        //     self.area
+        // );
         ((y - self.area.y) as usize) * (self.area.width as usize) + ((x - self.area.x) as usize)
     }
 
@@ -589,11 +589,11 @@ impl Buffer {
 
     /// Set all cells in the [area](Rect) to the given [Style]
     pub fn set_style(&mut self, area: Rect, style: Style) {
-        for y in area.top()..area.bottom() {
-            for x in area.left()..area.right() {
-                self[(x, y)].set_style(style);
-            }
-        }
+        // for y in area.top()..area.bottom() {
+        //     for x in area.left()..area.right() {
+        //         self[(x, y)].set_style(style);
+        //     }
+        // }
     }
 
     /// Resize the buffer so that the mapped area matches the given area and that the buffer
