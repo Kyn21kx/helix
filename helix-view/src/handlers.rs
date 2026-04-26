@@ -9,6 +9,7 @@ pub mod completion;
 pub mod dap;
 pub mod diagnostics;
 pub mod lsp;
+pub mod word_index;
 
 #[derive(Debug)]
 pub enum AutoSaveEvent {
@@ -34,6 +35,9 @@ pub struct Handlers {
     pub auto_save: Sender<AutoSaveEvent>,
     pub document_colors: Sender<lsp::DocumentColorsEvent>,
     pub blame: Sender<BlameEvent>,
+    pub word_index: word_index::Handler,
+    pub pull_diagnostics: Sender<lsp::PullDiagnosticsEvent>,
+    pub pull_all_documents_diagnostics: Sender<lsp::PullAllDocumentsDiagnosticsEvent>,
 }
 
 impl Handlers {
@@ -58,8 +62,13 @@ impl Handlers {
         };
         send_blocking(&self.signature_hints, event)
     }
+
+    pub fn word_index(&self) -> &word_index::WordIndex {
+        &self.word_index.index
+    }
 }
 
 pub fn register_hooks(handlers: &Handlers) {
     lsp::register_hooks(handlers);
+    word_index::register_hooks(handlers);
 }
