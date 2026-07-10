@@ -219,7 +219,7 @@ Jumps to various locations.
 | <code>&lt;n&gt;&#124;</code>  | Go to column number `<n>`      | `goto_column`              |
 | <code>&#124;</code>     | Go to the start of line        | `goto_column`              |
 | `e`   | Go to the end of the file                        | `goto_last_line`           |
-| `f`   | Go to files in the selections                    | `goto_file`                |
+| `f`   | Go to files/URLs in selections                   | `goto_file`                |
 | `h`   | Go to the start of the line                      | `goto_line_start`          |
 | `l`   | Go to the end of the line                        | `goto_line_end`            |
 | `s`   | Go to first non-whitespace character of the line | `goto_first_nonwhitespace` |
@@ -267,8 +267,8 @@ This layer is similar to Vim keybindings as Kakoune does not support windows.
 | `w`, `Ctrl-w`          | Switch to next window                                | `rotate_view`     |
 | `v`, `Ctrl-v`          | Vertical right split                                 | `vsplit`          |
 | `s`, `Ctrl-s`          | Horizontal bottom split                              | `hsplit`          |
-| `f`                    | Go to files in the selections in horizontal splits   | `goto_file`       |
-| `F`                    | Go to files in the selections in vertical splits     | `goto_file`       |
+| `f`                    | Go to files/URLs in selections in horizontal splits  | `goto_file`       |
+| `F`                    | Go to files/URLs in selections in vertical splits    | `goto_file`       |
 | `h`, `Ctrl-h`, `Left`  | Move to left split                                   | `jump_view_left`  |
 | `j`, `Ctrl-j`, `Down`  | Move to split below                                  | `jump_view_down`  |
 | `k`, `Ctrl-k`, `Up`    | Move to split above                                  | `jump_view_up`    |
@@ -314,6 +314,7 @@ This layer is a kludge of mappings, mostly pickers.
 | `R`     | Replace selections by clipboard contents                                | `replace_selections_with_clipboard`        |
 | `/`     | Global search in workspace folder                                       | `global_search`                            |
 | `?`     | Open command palette                                                    | `command_palette`                          |
+| `B`     | Show blame for the current line                                         | `blame_line`                             |
 
 > 💡 Global search displays results in a fuzzy picker, use `Space + '` to bring it back up after opening a file.
 

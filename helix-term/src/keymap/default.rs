@@ -226,7 +226,7 @@ pub fn default() -> HashMap<Mode, KeyTrie> {
             "f" => file_picker,
             "F" => file_picker_in_current_directory,
             "e" => file_explorer,
-            "E" => file_explorer_in_current_buffer_directory,
+            "." => file_explorer_in_current_buffer_directory,
             "b" => buffer_picker,
             "j" => jumplist_picker,
             "s" => lsp_or_syntax_symbol_picker,
@@ -292,6 +292,7 @@ pub fn default() -> HashMap<Mode, KeyTrie> {
             "C" => toggle_block_comments,
             "A-c" => toggle_line_comments,
             "?" => command_palette,
+            "B" => blame_line,
         },
         "z" => { "View"
             "z" | "c" => align_view_center,
